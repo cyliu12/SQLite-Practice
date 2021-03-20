@@ -35,32 +35,35 @@ namespace Practice1
                 com.ExecuteNonQuery();
                 Console.WriteLine("Create SQLite DB File");
             }
-
-
-
-            
-          
         }
-
-
 
         static void TestInsert()
         {
             //com.CommandText="DELETE FROM test";
             //com.CommandText = "INSERT INTO test (id, text) VALUES (1, '測試1');";
-            com.CommandText = "INSERT INTO test (text) VALUES ('測試auto');";
+            DateTime d = DateTime.Now;            
+            String insertCMD = String.Format("INSERT INTO test (text) VALUES ('時間 : {0}');", d.ToString());
+            com.CommandText = insertCMD;
             com.ExecuteNonQuery();           
             Console.WriteLine("Insert data into SQLite DB");
         }
 
         static void TestSelect()
         {
-            /*using (var cn = new SQLiteConnection(cnStr))
+            // 查詢剛新增的表test
+            com.CommandText = "SELECT * FROM test";
+
+            // 執行查詢塞入 sqlite_datareader
+            SQLiteDataReader sqlite_datareader = com.ExecuteReader();
+
+            // 一筆一筆列出查詢的資料
+            while (sqlite_datareader.Read())
             {
-                var list = cn.Query("SELECT * FROM Player");
-                Console.WriteLine(
-                    JsonConvert.SerializeObject(list, Formatting.Indented));
-            }*/
+                // Print out the content of the text field:
+                String s = sqlite_datareader["text"].ToString();
+                Console.WriteLine(s);
+
+            }
         }
 
         static void CloseSQLiteDb()
@@ -74,7 +77,7 @@ namespace Practice1
         {
             InitSQLiteDb();
             TestInsert();
-            //TestSelect();
+            TestSelect();
             CloseSQLiteDb();
             Console.Read();
         }
