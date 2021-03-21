@@ -15,7 +15,7 @@ namespace Practice1
         static SQLiteCommand com;
         static string dbPath = @".\TestOver83中文.sqlite";
         static string cnStr = "data source=" + dbPath;
-      
+
         static void InitSQLiteDb()
         {
             Console.WriteLine("Init SQLite DB");
@@ -41,29 +41,41 @@ namespace Practice1
         {
             //com.CommandText="DELETE FROM test";
             //com.CommandText = "INSERT INTO test (id, text) VALUES (1, '測試1');";
-            DateTime d = DateTime.Now;            
+            DateTime d = DateTime.Now;
             String insertCMD = String.Format("INSERT INTO test (text) VALUES ('時間 : {0}');", d.ToString());
             com.CommandText = insertCMD;
-            com.ExecuteNonQuery();           
+            com.ExecuteNonQuery();
             Console.WriteLine("Insert data into SQLite DB");
         }
 
         static void TestSelect()
         {
+            SQLiteDataReader sqlite_datareader;
+
             // 查詢剛新增的表test
             com.CommandText = "SELECT * FROM test";
-
-            // 執行查詢塞入 sqlite_datareader
-            SQLiteDataReader sqlite_datareader = com.ExecuteReader();
-
-            // 一筆一筆列出查詢的資料
-            while (sqlite_datareader.Read())
+            //com.CommandText = "SELECT * FROM test WHERE id = 5";
+            try
             {
-                // Print out the content of the text field:
-                String s = sqlite_datareader["text"].ToString();
-                Console.WriteLine(s);
+                // 執行查詢塞入 sqlite_datareader
+                sqlite_datareader = com.ExecuteReader();
 
+                // 一筆一筆列出查詢的資料
+                while (sqlite_datareader.Read())
+                {
+                    // Print out the content of the text field:
+                    String s = sqlite_datareader["text"].ToString();
+                    Console.WriteLine(s);
+                }
             }
+            catch (SQLiteException e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+
+
+
+
         }
 
         static void CloseSQLiteDb()
