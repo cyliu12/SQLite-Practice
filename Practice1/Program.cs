@@ -31,7 +31,8 @@ namespace Practice1
                 con = new SQLiteConnection(cnStr);
                 con.Open();
                 com = con.CreateCommand();
-                com.CommandText = "CREATE TABLE test (id integer primary key autoincrement, text varchar(10));";
+                //com.CommandText = "CREATE TABLE test (id integer primary key autoincrement, text varchar(10))";
+                com.CommandText = "CREATE TABLE test (id integer primary key autoincrement, text string)";
                 com.ExecuteNonQuery();
                 Console.WriteLine("Create SQLite DB File");
             }
@@ -42,7 +43,7 @@ namespace Practice1
             //com.CommandText="DELETE FROM test";
             //com.CommandText = "INSERT INTO test (id, text) VALUES (1, '測試1');";
             DateTime d = DateTime.Now;
-            String insertCMD = String.Format("INSERT INTO test (text) VALUES ('時間 : {0}');", d.ToString());
+            String insertCMD = String.Format("INSERT INTO test (text) VALUES ('時間 : {0}')", d.ToString());
             com.CommandText = insertCMD;
             com.ExecuteNonQuery();
             Console.WriteLine("Insert data into SQLite DB");
@@ -87,11 +88,22 @@ namespace Practice1
 
         static void Main(string[] args)
         {
-            InitSQLiteDb();
+            
+            /* InitSQLiteDb();
             TestInsert();
             TestSelect();
             CloseSQLiteDb();
-            Console.Read();
+            */
+            string[] tableNames = { "PlanetCrossing", "MoonChannelling", "SolarTerms" };
+
+            SQLiteIO.SetDbName("croxTimes");
+            SQLiteIO.InitDb(tableNames);
+            DateTime d = DateTime.Now;
+            SQLiteIO.SaveInstance("PlanetCrossing", d.Second.ToString(), "contents" + d.ToString());
+            SQLiteIO.GetContents("PlanetCrossing", "all");
+            Console.WriteLine("{0} : {1}", "03", SQLiteIO.GetFileContents("PlanetCrossing", "03"));
+            SQLiteIO.CloseDb();
+            Console.Read();            
         }
     }
 }
